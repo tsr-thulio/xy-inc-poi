@@ -1,0 +1,23 @@
+{
+  "name": "xy-inc-poi",
+  "version": "1.0.0",
+  "description": "Helping people to locate Points of Interest (POIs)",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "test": "test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/tsr-thulio/xy-inc-poi.git"
+  },
+  "author": "Thulio Ribeiro",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/tsr-thulio/xy-inc-poi/issues"
+  },
+  "homepage": "https://github.com/tsr-thulio/xy-inc-poi#readme",
+  "dependencies": {
+    "express": "^4.15.2"
+  }
+}
