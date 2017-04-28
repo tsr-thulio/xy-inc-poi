@@ -18,9 +18,14 @@
   },
   "homepage": "https://github.com/tsr-thulio/xy-inc-poi#readme",
   "dependencies": {
+    "ajv": "^5.0.0",
+    "bluebird": "^3.5.0",
     "body-parser": "^1.17.1",
     "express": "^4.15.2",
+    "lodash": "^4.17.4",
     "mocha": "^3.3.0",
+    "mongodb": "^2.2.26",
+    "require-directory": "^2.1.1",
     "supertest": "^3.0.0"
   }
 }
