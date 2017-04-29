@@ -21,7 +21,9 @@ Aplicação é uma plataforma que fornecerá toda a inteligência ao dispositivo
 - Quando a aplicação estiver ok o prompt exibirá a mensagem: "Server initialized"
 
 # Execução de testes unitários
-- Através de um prompt de comando, na pasta raiz do projeto executo o comando: `npm test`
+- Se ainda não estiver rodando, inicie o mongoDB Server na máquina através de um prompt de comando com do comando `mongod` (pode ser necessário privilégios de administrador, neste caso execute `sudo mongod`).
+  - OBS.: quando o mongoDB estiver sendo executado, o prompt estará com a seguinte mensagem: `[thread1] waiting for connections on port 27017`
+- Através de um prompt de comando, na pasta raiz do projeto execute o comando: `npm test`
 
 # Utilizando a aplicação
 - Com a aplicação rodando você poderá realizar as 3 operações requeridas através de um aplicativo para testes de Web Api como o Postman por exemplo. Utilize as seguintes informações:
@@ -33,5 +35,5 @@ Aplicação é uma plataforma que fornecerá toda a inteligência ao dispositivo
   - URL: http://localhost:9000/poi
 - GET (Listagem de POIs por proximidade)
   - URL: http://localhost:9000/poi/proximity
-  - Os parâmetros `x` e `y` deverão ser informados por query string.
+  - Os parâmetros `x` e `y` deverão ser informados por querystring.
   - Exemplo de request: http://localhost:9000/poi/proximity?x=10&y=20

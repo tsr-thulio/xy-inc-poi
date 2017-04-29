@@ -5,7 +5,6 @@ var router = express.Router()
 var Promise = require('bluebird')
 var MongoClient = require('mongodb').MongoClient
 var assert = require('assert')
-var url = 'mongodb://localhost:27017/xy-inc';
 
 /**
  * Router to make a POST and create POIs on data base
@@ -17,12 +16,8 @@ router.post('/poi', function(req, resp) {
     var poi = Types.create('poi.typeDef', req.body)
     return poi
   })
-  .catch(function(err) {
-    resp.status(err.statusCode)
-    resp.json({status: err.statusCode, message: err.message})
-  })
   .then(function(poi) {
-    MongoClient.connect(url, function(err, db) {
+    MongoClient.connect(req.app.get('dbUrl'), function(err, db) {
       assert.equal(null, err)
 
       db.collection('poi').insertOne(poi, function(err, r) {
@@ -34,6 +29,10 @@ router.post('/poi', function(req, resp) {
     resp.status(200)
     resp.json(poi)
   })
+  .catch(function(err) {
+    resp.status(err.statusCode || 500)
+    resp.json({status: err.statusCode || 500, message: err.message})
+  })
 })
 
 /**
@@ -42,11 +41,15 @@ router.post('/poi', function(req, resp) {
 router.get('/poi', function(req, resp) {
   return Promise.resolve()
   .then(function() {
-    return findItems({}, 'poi')
+    return findItems(req.app.get('dbUrl'), {}, 'poi')
   })
   .then(function(items) {
     resp.status(200)
     resp.json(items)
+  })
+  .catch(function(err) {
+    resp.status(err.statusCode || 500)
+    resp.json({status: err.statusCode || 500, message: err.message})
   })
 })
 
@@ -56,28 +59,31 @@ router.get('/poi', function(req, resp) {
 router.get('/poi/proximity', function(req, resp) {
   return Promise.resolve()
   .then(function() {
-    var query = {
-      x: {
-        $gte: Number(req.query.x) - 10,
-        $lte: Number(req.query.x) + 10
-      },
-      y: {
-        $gte: Number(req.query.y) - 10,
-        $lte: Number(req.query.y) + 10
-      }
-    }
-    return query
+    validateQueryString(req.query.x, req.query.y)
+    return createMongoDbQuery(req.query.x, req.query.y)
   })
   .then(function(query) {
-    return findItems(query, 'poi')
+    return findItems(req.app.get('dbUrl'), query, 'poi')
   })
   .then(function(result) {
     resp.status(200)
     resp.json(result)
   })
+  .catch(function(err) {
+    resp.status(err.statusCode || 500)
+    resp.json({status: err.statusCode || 500, message: err.message})
+  })
 })
 
-function findItems(query, collection) {
+/**
+ * Abstraction to get entities on database according to query, url
+ * and collection
+ * @param  {string} url - the url for database connection
+ * @param  {object} query - object containing the mongoDB query
+ * @param  {string} collection - name of database collection
+ * @returns {Promise<Array>}
+ */
+function findItems(url, query, collection) {
   return new Promise(function(resolve, reject) {
     MongoClient.connect(url, function(err, db) {
       assert.equal(null, err);
@@ -88,6 +94,39 @@ function findItems(query, collection) {
       });
     });
   }) 
+}
+
+/**
+ * Generate querystring for mongoDB
+ * @param  {string} x - string representing the x coordinate
+ * @param  {string} y - string representing the y coordinate
+ * @returns {object} - the mongoDb query created
+ */
+function createMongoDbQuery(x, y) {
+  var query = {
+      x: {
+        $gte: Number(x) - 10,
+        $lte: Number(x) + 10
+      },
+      y: {
+        $gte: Number(y) - 10,
+        $lte: Number(y) + 10
+      }
+    }
+  return query
+}
+
+/**
+ * Validation of querystring coordinates
+ * @param  {string} x string representing the x coordinate
+ * @param  {string} y - string representing the y coordinate
+ * @returns {Error} - if the values are not ok
+ */
+function validateQueryString(x, y) {
+  if (x === undefined || y === undefined || isNaN(Number(x)) || isNaN(Number(y))) {
+    var err = new Error('Coodinates parameter not informed or invalid on queryString')
+    throw err
+  }
 }
 
 module.exports = router
