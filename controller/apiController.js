@@ -7,6 +7,13 @@ var MongoClient = require('mongodb').MongoClient
 var assert = require('assert')
 
 /**
+ * Router to redirect the main page to swagger documentation
+ */
+router.get('/', function(req, resp) {
+  resp.redirect('/swagger-ui/?url=..%2Fswagger.yaml#/')
+})
+
+/**
  * Router to make a POST and create POIs on data base
  */
 router.post('/poi', function(req, resp) {
