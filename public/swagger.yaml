@@ -1,0 +1,145 @@
+swagger: '2.0'
+info:
+  title: xy-inc POIs
+  description: API for Points of Interest management
+  version: 1.0.0
+tags:
+- name: POIs
+  description: Points of Interest operations
+produces:
+  - application/json
+
+schemes:
+  - http
+
+parameters:
+  poi:
+    name: body
+    in: body
+    description: request body
+    required: true
+    schema:
+      type: object
+      properties:
+        x:
+          type: integer
+          minimum: 0
+          description: x coordinate for the point
+        y:
+          type: integer
+          minimum: 0
+          description: y coordinate for the point
+        name:
+          type: string
+          description: name of the point
+  x:
+    name: x
+    in: query
+    description: x coordinate
+    required: true
+    type: string
+  y:
+    name: y
+    in: query
+    description: y coordinate
+    required: true
+    type: string
+
+
+paths:
+  /poi:
+    post:
+      tags:
+        - POIs
+      summary: Insert a POI
+      description: Insert a POI on database according parameters
+      parameters:
+        - $ref: '#/parameters/poi'
+      responses:
+        200:
+          description: The POI created
+          schema:
+            $ref: '#/definitions/poi'
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Error'
+    get:
+      tags:
+        - POIs
+      summary: Get all POIs
+      description: Retrieve all POIs on database
+      responses:
+        200:
+          description: The POI created
+          schema:
+            $ref: '#/definitions/poiList'
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Error'
+
+  /poi/proximity:
+    get:
+      tags:
+        - POIs
+      summary: Get POIs by proximity
+      description: Retrieve all POIs on database that fills to the given range
+      parameters:
+        - $ref: '#/parameters/x'
+        - $ref: '#/parameters/y'
+      responses:
+        200:
+          description: The POI created
+          schema:
+            $ref: '#/definitions/poiList'
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Error'
+
+definitions:
+  poi:
+    type: object
+    properties:
+      x:
+        type: integer
+        minimum: 0
+        description: x coordinate for the point
+      y:
+        type: integer
+        minimum: 0
+        description: y coordinate for the point
+      name:
+        type: string
+        description: name of the point
+  dbPoi:
+    type: object
+    properties:
+      _id:
+        type: string
+        description: mongoDB id for object
+      x:
+        type: integer
+        minimum: 0
+        description: x coordinate for the point
+      y:
+        type: integer
+        minimum: 0
+        description: y coordinate for the point
+      name:
+        type: string
+        description: name of the point
+  poiList:
+    type: array
+    description: The original array verified
+    items:
+      $ref: '#/definitions/dbPoi'
+
+  Error:
+    type: object
+    properties:
+      message:
+        type: string
+      status:
+        type: integer
