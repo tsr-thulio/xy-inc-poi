@@ -31,9 +31,9 @@ router.post('/poi', function(req, resp) {
         assert.equal(null, err)
         assert.equal(1, r.insertedCount)
         db.close()
-      });
-    });
-    resp.status(200)
+      })
+    })
+    resp.status(201)
     resp.json(poi)
   })
   .catch(function(err) {
@@ -93,13 +93,13 @@ router.get('/poi/proximity', function(req, resp) {
 function findItems(url, query, collection) {
   return new Promise(function(resolve, reject) {
     MongoClient.connect(url, function(err, db) {
-      assert.equal(null, err);
+      assert.equal(null, err)
       db.collection(collection).find(query).toArray(function(err, docs) {
         assert.equal(err, null)
         db.close()
         resolve(docs)
-      });
-    });
+      })
+    })
   }) 
 }
 

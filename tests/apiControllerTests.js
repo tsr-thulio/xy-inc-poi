@@ -7,7 +7,7 @@ var bodyParser = require('body-parser')
 var apiController = require('../controller/apiController')
 var MongoClient = require('mongodb').MongoClient
 var Types = require('../Types')
-var url = 'mongodb://localhost:27017/xy-inc-test';
+var url = 'mongodb://localhost:27017/xy-inc-test'
 
 var app = express()
   .set('dbUrl', url)
@@ -21,7 +21,7 @@ function removeData(item) {
     db.collection('poi').deleteOne(item, function(err, r) {
       db.close()
     })
-  });
+  })
 }
 
 function insertData(poi) {
@@ -29,7 +29,7 @@ function insertData(poi) {
     db.collection('poi').insertOne(poi, function(err, r) {
       db.close()
     })
-  });
+  })
 }
 
 describe('API controller tests', function () {
@@ -151,7 +151,7 @@ describe('API controller tests', function () {
           .post('/poi')
           .send({x: 5, y: 5, name: 'test'})
           .expect({x: 5, y: 5, name: 'test'})
-          .expect(200)
+          .expect(201)
           .end(done)
       })
     })
