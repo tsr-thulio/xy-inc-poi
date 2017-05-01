@@ -21,7 +21,7 @@ function removeData(item) {
     db.collection('poi').deleteOne(item, function(err, r) {
       db.close()
     })
-  });
+  })
 }
 
 function insertData(poi) {
@@ -29,7 +29,7 @@ function insertData(poi) {
     db.collection('poi').insertOne(poi, function(err, r) {
       db.close()
     })
-  });
+  })
 }
 
 describe('API controller tests', function () {
@@ -151,7 +151,7 @@ describe('API controller tests', function () {
           .post('/poi')
           .send({x: 5, y: 5, name: 'test'})
           .expect({x: 5, y: 5, name: 'test'})
-          .expect(200)
+          .expect(201)
           .end(done)
       })
     })
