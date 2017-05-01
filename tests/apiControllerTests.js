@@ -7,7 +7,7 @@ var bodyParser = require('body-parser')
 var apiController = require('../controller/apiController')
 var MongoClient = require('mongodb').MongoClient
 var Types = require('../Types')
-var url = 'mongodb://localhost:27017/xy-inc-test';
+var url = 'mongodb://localhost:27017/xy-inc-test'
 
 var app = express()
   .set('dbUrl', url)

@@ -4,7 +4,7 @@ var express = require('express')
 var bodyParser = require('body-parser')
 var Types = require('./Types')
 var swaggerUi = require('swaggerize-ui')
-var url = 'mongodb://localhost:27017/xy-inc';
+var url = 'mongodb://localhost:27017/xy-inc'
 
 var app = express()
 
