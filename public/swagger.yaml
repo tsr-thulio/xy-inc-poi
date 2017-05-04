@@ -45,7 +45,6 @@ parameters:
     required: true
     type: string
 
-
 paths:
   /poi:
     post:

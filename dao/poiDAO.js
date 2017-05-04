@@ -6,12 +6,11 @@ var assert = require('assert')
 
 
 /**
- * Abstraction to get entities on database according to query, url
- * and collection
+ * Abstraction to insert entities on database according to url and collection
  * @param  {string} url - the url for database connection
- * @param  {object} query - object containing the mongoDB query
+ * @param  {object} obj - object to persist
  * @param  {string} collection - name of database collection
- * @returns {Promise<Array>}
+ * @returns {Promise<Object>}
  */
 this.insertItem = function(url, obj, collection) {
   return new Promise(function(resolve, reject) {
