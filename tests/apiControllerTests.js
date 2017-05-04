@@ -4,7 +4,7 @@ var express = require('express')
 var expect = require('chai').expect
 var request = require('supertest')
 var bodyParser = require('body-parser')
-var apiController = require('../controller/apiController')
+var routes = require('../route/poiRoute')
 var MongoClient = require('mongodb').MongoClient
 var Types = require('../Types')
 var url = 'mongodb://localhost:27017/xy-inc-test'
@@ -14,13 +14,12 @@ var app = express()
   .set('types', new Types())
   .use(bodyParser.json())
   .use(bodyParser.urlencoded({extended: true}))
-  .use(apiController)
+  .use(routes)
 
-function removeData(item) {
+function cleanAllDB(item) {
   MongoClient.connect(url, function(err, db) {
-    db.collection('poi').deleteOne(item, function(err, r) {
-      db.close()
-    })
+    db.dropDatabase()
+    db.close()
   })
 }
 
@@ -35,7 +34,7 @@ function insertData(poi) {
 describe('API controller tests', function () {
 
   beforeEach(function() {
-    this.timeout(5000)
+    cleanAllDB()
   })
 
   describe('POIs operations', function() {
@@ -43,21 +42,20 @@ describe('API controller tests', function () {
       beforeEach(function() {
         insertData({x: 1, y: 2, name: 'TestData'})
       })
-      afterEach(function() {
-        removeData({x:1, y:2, name: 'TestData'})
-      })
 
       it('Should return 200 and get the all POIs on data base', function (done) {
-        request(app)
-          .get('/poi')
-          .expect(200)
-          .expect(function(req) {
-            expect(req.body.length).to.equal(1)
-            expect(req.body[0].x).to.equal(1)
-            expect(req.body[0].y).to.equal(2)
-            expect(req.body[0].name).to.equal('TestData')
-          })
-          .end(done)
+        setTimeout(function() {
+          request(app)
+            .get('/poi')
+            .expect(200)
+            .expect(function(req) {
+              expect(req.body.length).to.equal(1)
+              expect(req.body[0].x).to.equal(1)
+              expect(req.body[0].y).to.equal(2)
+              expect(req.body[0].name).to.equal('TestData')
+            })
+            .end(done)
+        }, 500);
       })
     })
 
@@ -67,24 +65,22 @@ describe('API controller tests', function () {
         insertData({x: 30, y: 30, name: 'TestData2'})
         insertData({x: 40, y: 40, name: 'TestData3'})
       })
-      afterEach(function() {
-        removeData({x: 15, y: 15, name: 'TestData1'})
-        removeData({x: 30, y: 30, name: 'TestData2'})
-        removeData({x: 40, y: 40, name: 'TestData3'})
-      })
 
       it('Should return 200 with two POI on range', function (done) {
-        request(app)
-          .get('/poi/proximity?x=35&y=35')
-          .expect(function(req) {
-            expect(req.body.length).to.equal(2)
-            expect(req.body[0].x).to.equal(30)
-            expect(req.body[0].name).to.equal('TestData2')
-            expect(req.body[1].x).to.equal(40)
-            expect(req.body[1].name).to.equal('TestData3')
-          })
-          .expect(200)
-          .end(done)
+        setTimeout(function() {
+          request(app)
+            .get('/poi/proximity?x=35&y=35')
+            .expect(function(req) {
+              expect(req.body.length).to.equal(2)
+              expect(req.body[0].x).to.equal(30)
+              expect(req.body[0].name).to.equal('TestData2')
+              expect(req.body[1].x).to.equal(40)
+              expect(req.body[1].name).to.equal('TestData3')
+            })
+            .expect(200)
+            .end(done)
+          
+        }, 500);
       })
 
       it('Should return 200 with empty array', function (done) {
@@ -115,10 +111,6 @@ describe('API controller tests', function () {
     })
   
     describe('POST', function() {
-      afterEach(function() {
-        removeData({x: 5, y: 5, name: 'test'})
-      })
-
       it('Should return error 400 when call post opperation with invalid body', function (done) {
         request(app)
           .post('/poi')
@@ -147,12 +139,18 @@ describe('API controller tests', function () {
       })
 
       it('Should return error 200 and insert on data base', function (done) {
-        request(app)
-          .post('/poi')
-          .send({x: 5, y: 5, name: 'test'})
-          .expect({x: 5, y: 5, name: 'test'})
-          .expect(201)
-          .end(done)
+        setTimeout(function() {
+          request(app)
+            .post('/poi')
+            .send({x: 5, y: 5, name: 'test'})
+            .expect(function(req) {
+              expect(req.body.x).to.equal(5)
+              expect(req.body.y).to.equal(5)
+              expect(req.body.name).to.equal('test')
+            })
+            .expect(201)
+            .end(done)
+        }, 500);
       })
     })
   })

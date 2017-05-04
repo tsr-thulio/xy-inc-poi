@@ -45,7 +45,6 @@ parameters:
     required: true
     type: string
 
-
 paths:
   /poi:
     post:
@@ -113,28 +112,14 @@ definitions:
       name:
         type: string
         description: name of the point
-  dbPoi:
-    type: object
-    properties:
       _id:
         type: string
         description: mongoDB id for object
-      x:
-        type: integer
-        minimum: 0
-        description: x coordinate for the point
-      y:
-        type: integer
-        minimum: 0
-        description: y coordinate for the point
-      name:
-        type: string
-        description: name of the point
   poiList:
     type: array
     description: The original array verified
     items:
-      $ref: '#/definitions/dbPoi'
+      $ref: '#/definitions/poi'
 
   Error:
     type: object
