@@ -2,7 +2,6 @@
 
 var Promise = require('bluebird')
 var poiDAO = require('../dao/poiDAO')
-var MAX_PROXIMITY_RANGE = 10
 var DB_COLLECTION = 'poi'
 
 /**
@@ -53,8 +52,8 @@ this.getAll = function(req, resp) {
 this.getByProximity = function(req, resp) {
   return Promise.resolve()
   .then(function() {
-    validateQueryString(req.query.x, req.query.y)
-    return createProximityQuery(req.query.x, req.query.y)
+    validateQueryString(req.query.x, req.query.y, req.query.range)
+    return createProximityQuery(req.query.x, req.query.y, req.query.range)
   })
   .then(function(query) {
     return poiDAO.findItems(req.app.get('dbUrl'), query, DB_COLLECTION)
@@ -75,15 +74,15 @@ this.getByProximity = function(req, resp) {
  * @param  {string} y - string representing the y coordinate
  * @returns {object} - the mongoDb query created
  */
-function createProximityQuery(x, y) {
+function createProximityQuery(x, y, range) {
   var query = {
       x: {
-        $gte: Number(x) - MAX_PROXIMITY_RANGE,
-        $lte: Number(x) + MAX_PROXIMITY_RANGE
+        $gte: Number(x) - Number(range),
+        $lte: Number(x) + Number(range)
       },
       y: {
-        $gte: Number(y) - MAX_PROXIMITY_RANGE,
-        $lte: Number(y) + MAX_PROXIMITY_RANGE
+        $gte: Number(y) - Number(range),
+        $lte: Number(y) + Number(range)
       }
     }
   return query
@@ -93,10 +92,11 @@ function createProximityQuery(x, y) {
  * Validation of querystring coordinates
  * @param  {string} x string representing the x coordinate
  * @param  {string} y - string representing the y coordinate
+ * @param  {string} range - string representing the y coordinate
  * @returns {Error} - if the values are not ok
  */
-function validateQueryString(x, y) {
-  if (x === undefined || y === undefined || isNaN(Number(x)) || isNaN(Number(y))) {
+function validateQueryString(x, y, range) {
+  if (x === undefined || range === undefined || y === undefined || isNaN(Number(x)) || isNaN(Number(y) || isNaN(range))) {
     var err = new Error('Coodinates parameter not informed or invalid on queryString')
     throw err
   }

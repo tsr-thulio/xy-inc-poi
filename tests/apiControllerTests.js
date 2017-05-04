@@ -69,7 +69,7 @@ describe('API controller tests', function () {
       it('Should return 200 with two POI on range', function (done) {
         setTimeout(function() {
           request(app)
-            .get('/poi/proximity?x=35&y=35')
+            .get('/poi/proximity?x=35&y=35&range=10')
             .expect(function(req) {
               expect(req.body.length).to.equal(2)
               expect(req.body[0].x).to.equal(30)
@@ -85,7 +85,7 @@ describe('API controller tests', function () {
 
       it('Should return 200 with empty array', function (done) {
         request(app)
-          .get('/poi/proximity?x=1&y=4')
+          .get('/poi/proximity?x=1&y=4&range=10')
           .expect(function(req) {
             expect(req.body.length).to.equal(0)
           })

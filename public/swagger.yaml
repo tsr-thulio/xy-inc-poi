@@ -44,6 +44,12 @@ parameters:
     description: y coordinate
     required: true
     type: string
+  range:
+    name: range
+    in: query
+    description: range to find POIs by proximity
+    required: true
+    type: string
 
 paths:
   /poi:
@@ -87,6 +93,7 @@ paths:
       parameters:
         - $ref: '#/parameters/x'
         - $ref: '#/parameters/y'
+        - $ref: '#/parameters/range'
       responses:
         200:
           description: The POI created
