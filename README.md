@@ -35,6 +35,6 @@ Aplicação é uma plataforma que fornecerá toda a inteligência ao dispositivo
   - URL: http://localhost:9000/poi
 - GET (Listagem de POIs por proximidade)
   - URL: http://localhost:9000/poi/proximity
-  - Os parâmetros `x` e `y` deverão ser informados por querystring.
-  - Exemplo de request: http://localhost:9000/poi/proximity?x=10&y=20
+  - Os parâmetros `x`, `y` e `range` deverão ser informados por querystring.
+  - Exemplo de request: http://localhost:9000/poi/proximity?x=10&y=20&range=10
 - Com a aplicação rodando, acesse o link http://localhost:9000 para ver a documentação detalhada gerada pelo Swagger
