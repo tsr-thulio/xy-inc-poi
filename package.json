@@ -4,8 +4,8 @@
   "description": "Helping people to locate Points of Interest (POIs)",
   "main": "index.js",
   "scripts": {
-    "start": "node index.js",
-    "test": "./node_modules/.bin/mocha ./tests"
+    "start": "DB_URL=mongodb://localhost:27017/xy-inc node index.js",
+    "test": "DB_URL=mongodb://localhost:27017/xy-inc-test ./node_modules/.bin/mocha ./tests"
   },
   "repository": {
     "type": "git",

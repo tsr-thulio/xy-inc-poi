@@ -2,7 +2,6 @@
 
 var Promise = require('bluebird')
 var poiDAO = require('../dao/poiDAO')
-var DB_COLLECTION = 'poi'
 
 /**
  * Function to add a new POI on database
@@ -15,7 +14,7 @@ this.add = function(req, resp) {
     return poi
   })
   .then(function(poiObj) {
-    return poiDAO.insertItem(req.app.get('dbUrl'), poiObj, DB_COLLECTION)
+    return poiDAO.insertItem(poiObj)
   })
   .then(function(doc) {
     resp.status(201)
@@ -34,7 +33,7 @@ this.getAll = function(req, resp) {
   return Promise.resolve()
   .then(function() {
     var query = {}
-    return poiDAO.findItems(req.app.get('dbUrl'), query, DB_COLLECTION)
+    return poiDAO.findAll()
   })
   .then(function(items) {
     resp.status(200)
@@ -53,10 +52,10 @@ this.getByProximity = function(req, resp) {
   return Promise.resolve()
   .then(function() {
     validateQueryString(req.query.x, req.query.y, req.query.range)
-    return createProximityQuery(req.query.x, req.query.y, req.query.range)
+    return req.query
   })
-  .then(function(query) {
-    return poiDAO.findItems(req.app.get('dbUrl'), query, DB_COLLECTION)
+  .then(function(params) {
+    return poiDAO.findByProximity(params)
   })
   .then(function(result) {
     resp.status(200)
@@ -66,26 +65,6 @@ this.getByProximity = function(req, resp) {
     resp.status(err.statusCode || 500)
     resp.json({status: err.statusCode || 500, message: err.message})
   })
-}
-
-/**
- * Generate querystring for mongoDB
- * @param  {string} x - string representing the x coordinate
- * @param  {string} y - string representing the y coordinate
- * @returns {object} - the mongoDb query created
- */
-function createProximityQuery(x, y, range) {
-  var query = {
-      x: {
-        $gte: Number(x) - Number(range),
-        $lte: Number(x) + Number(range)
-      },
-      y: {
-        $gte: Number(y) - Number(range),
-        $lte: Number(y) + Number(range)
-      }
-    }
-  return query
 }
 
 /**
