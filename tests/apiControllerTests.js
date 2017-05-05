@@ -7,28 +7,25 @@ var bodyParser = require('body-parser')
 var routes = require('../route/poiRoute')
 var MongoClient = require('mongodb').MongoClient
 var Types = require('../Types')
-var url = 'mongodb://localhost:27017/xy-inc-test'
+var db
+
+MongoClient.connect(process.env.DB_URL, function(err, conn) {
+  db = conn
+})
+
 
 var app = express()
-  .set('dbUrl', url)
   .set('types', new Types())
   .use(bodyParser.json())
   .use(bodyParser.urlencoded({extended: true}))
   .use(routes)
 
 function cleanAllDB(item) {
-  MongoClient.connect(url, function(err, db) {
-    db.dropDatabase()
-    db.close()
-  })
+  db.dropDatabase()
 }
 
 function insertData(poi) {
-  MongoClient.connect(url, function(err, db) {
-    db.collection('poi').insertOne(poi, function(err, r) {
-      db.close()
-    })
-  })
+  db.collection('poi').insertOne(poi)
 }
 
 describe('API controller tests', function () {
